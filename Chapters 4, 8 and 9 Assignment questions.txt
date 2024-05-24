@@ -1,0 +1,105 @@
+.What are the fields in ipv4 and ipv6 packet header, explain the purpose of each field (please watch Packet Header part1 and 2 in educreations to answer this question)  5 points
+version|header|type of service|total length|identification|flags|fragment offset|time to live|protocol|header checksum|SOURCE IP|DESTINATION IP|Padding
+
+version field: the field that tells you what version the packet is. if you see a 4, it is an ipv4 packet
+header length/internet header length: tells you the length/size of the ip header. minimum size is 20 bytes and maximum size is 60 bytes.
+type of service: 8 bit field.
+    precedence: first 3 bits, used by the router to prioritize traffic that goes through the router queues, which is a router buffering system used to hold packets when the router is congested
+	type of service: next 4 bits, used by the router to follow a specified path type to maximize security, reliability, throughput or minimize delay. 1111 is maximum security, 0100 is maximum throughput, 0010 is maximum reliability, 1000 is minimum delay.
+	last bit: unused/reserved. not in use
+    there is another way to differentiate services according to rfc2474.
+	dscp: first 6 bits, differentiated service core pointer
+	ECN: next bit, explicit congestion notification, allows end to end notification without dropping the packets. only used when both ends support it and are willing to use it. designed to provide devices with notifying eachother that the link is experiencing congestion before routers begin to drop the packets. if the ECN is 0 and the CE is 1 or ECN is 1 and CE is 0, then the sending router supports ECN and it is ECT. if the combination is 0 and 0, then the sender is not ECT. if the combination is 1 and 1 then the sender is capable of ECT and there is congestion.
+		ECT: ECN capable transport. if a packet between two routers is experiencing congestion, the receiving router may change the node to congestion encounter (EC)
+	C bit:
+	in this way first 6 bits are called 'differentiated' services and they are called the differentiated service core pointer or dscp. the next bit is used for ECN or explicit congestion notification, it is defined and the next one is the C bit which tells you whether there's congestion or not.
+total length: the length of the header plus the data
+identification: used to identify fragmented data with each other so that they can be put back together. fragmented data will have the same identification number to show that it is only a piece of a larger set of data
+	data is only fragmented when the data being sent is larger than the MTU (maximum transmission unit).
+flags: assists in the reassembling of fragmented data at the receiving end. 3 bits.
+	dome fragment: 1 (true) means fragmentation is not allowed, 0 (false) means if the packet size is larger than the mtu then the packet should be fragmented.
+	more fragment: 1 (true) tells the receiver that there are more fragments are coming. 0 (false) tells the receiver that there are no more fragments coming.
+	reserve: unused
+fragment offset: assists in the reassembling of fragmented data at the receiving end. shows where to place the fragmented pieces of data as they are being reassembled, sequencing the fragmented data to make it look exactly like the original data. each fragmented portion will have its own unique offset.
+time to live: prevents routing loops which happen when packets hop between routers endlessly by giving a packet a certain time to exist, after that time it is disposed of. possible values are 32, 64, 128 and 255. each time the packet hops the value goes down by 1. if the the value hits 0 before the packet reaches its destination, the packet is dropped off and it sends an error message back to the sender that tells it the time on the packet exceeded.
+protocol: 8 bits. identifies the type of transport layer protocol that will receive the data. specifies whether it is udp/tcp, so it defines the protocol that is used in the higher layer.
+	17: udp
+	6: tcp
+	1: icmp
+header checksum/checksum: provides error detection on the header only, helps to identify whether any of the contents on these header fields are modified. it takes the values of all the fields and runs an algorithm that generates a number via the crc (cyclic redundancy check) algorithm, that number becomes the checksum value. the receiver then takes the fields and uses the same algorithm to generate a checksum value and compares it to the header checksum. if the checksum from the header and the checksum it generates match, the data was not modified as it was being transmitted, if it doesnt the data was modified.
+source ip: ipv4 address of the machine the packet is coming from. can change if it is a private ip address and needs to be a public ip address to communicate with a machine outside of the LAN. cannot be a broadcast or multicast address as the source is always a specific machine but it can be 0.0.0.0 which is an unspecified address, which is used when a machine has no ip address and is looking for a dhcp server
+destination ip: ipv4 address of the machine the packet is intended for. can include a unicast, multicast or broadcast address because it could be going to a single destination (unicast), a specific range of devices (multicast) or all devices on the network (broadcast).
+options: not used often. provides additional ip routing controls, records the route individual packets take between the sender and receiver, variable
+padding: filler bits, ensures that the header is a multiple of 32.
+
+IPV6:
+version|traffic class|flow label|payload length|next header|source ip|destination ip
+
+version field: the field that tells you what version the packet is. if you see a 6 or 0110, it is an ipv6 packet
+traffic class: 8 bits, used by the source and forwarding routers to distinguish the classes or priorities in ipv6 packets.
+	time sensitivity: first bit, if 1 it is time sensitive if 0 it is not
+	precedence: 3 bits, helps to prioritize traffic as it passes through the router processing and queuing system. allows the application to differentiate traffic types and give it different prioities based on needs.
+	reserved: last 4
+flow label: indicates that the packet belongs to a specific sequence of packets, so it requires special handling by the intermediary network devices. value is 0 for packets not part of any flow.
+payload length: 16 bits, tells the router how much info the packet contains in its payload which is composed of extension headers and upper level data.
+next header: helps the packets be more efficient as it gets rid of unnecessary options like there are in an ipv4 header. extension 
+    value of 6: next header is a tcp header
+	value of 17: next header is a udp header
+	value of 1: next header is an icmp header
+	value of 0, 43, 44, 50, 51, 59, 60: means the next header is an extenson header. 0 is for hop by hop extension headers, 43 is for routing header, 44 for fragment header, 50 is for encapsulation security payload, 51 is for auth header, 59 is for no next extension header, 60 is destination options header
+    extension headers:
+	    hop by hop: 0, used to specify delivery options at each hop. just after the ipv6 header and has optional data that has to be processed by every intermediary router, only use when necessary, processed just after payload length.
+			jumbogram payload option: identifies the payoad of the packet as longer than allowed
+			router alert: notifies the intermediary routers when there is info inside an ipv6 datagram that must be viewed and processed by intermediate routers. also mld and reservation protocol
+		destination options: 60, can appear before routing and after hop by hop or might appear after the esp. used to specify packet delivery options for either intermediary machines or final destinations
+		routing: 43, indicates that packets will be specificing specific routers or nodes on its way to its destination. includes the list of addresses of all routers the packet will be visiting along its path to its destination.
+		fragment header: 44, used for ipv6 fragmentation and reassembly services
+		authentication (AH) header: 51, provides data authentication or verification of the node that sent the packet, verifies whether the sending data is actually the node it says it is and verifies data integrity, provides anti-replay protection which assures that the captured modified packets cannot be transmitted and accepted as valid data
+		encapsulation security payload: 50, provides confidentiality and encryption to protect data from a security standpoint
+	source ip: ip address of the source machine that sent the data
+	destination ip: ip address of the machine that will receive the data
+
+2.What is the purpose of ARP, how does this protocol work (please watch ARP Parts1 and 2 in educreations to answer this question)  5 points
+ARP (address resolution protocol) resolves the network layer ip address to the data link layer or the physical address (mac address) of a machine. when two devices in the same network want to talk to each other the sender should know the ip address as well as the mac address of the destination, if it knows the ip but not the mac but it will resolve the mac from the known ip address from the arp protocol.
+
+ARP Cache: a list of ip and mac addresses of other machines in its network, also knows the status. can be set statically by an admin or dynamically by the arp. to look at the arp cache you have to go to the command prompt and type arp -a. it then gives you a list of ip addresses, corresponding mac addresses and the type which tells you if it was dynamically or statically learned.
+
+how arp works: two machines want to communicate, but the sender doesn't know the ip address of the receiver so it tries to get the mac address of the receiver in the form of an arp request broadcast which everyone in the network will receive, but only the intended recipient of the request will respond to it. it will then reply in the form of an arp reply which is unicast because it knows where the arp request came from which contained the mac address and ip address of the sender. the arp reply contains the mac address which the sender receives, now the original sender knows the mac address of the receiver and communication can occur
+
+3.What Protocol helps in automatic Ip address assignment and explain the 4 steps involved in the process  address assignment  (please watch ipv4 part1 and 2  and dhcp wireshark address in educreations to answer this question)  5 points
+DHCP helps with automatic ip address asignment. There are four steps, DHCP Discover, DHCP Offer, DHCP Request and DHCP Aknowledgement.
+DHCP Discover: A discover packet is sent from the client to the server, the client is looking for a dhcp server that can give it an ip address.
+DHCP Offer: A server receives the Discover packet and returns this packet which contains an IP address.
+DHCP Request: The client receives the Offer packet and validates it. It then sends a request packet back to the server to accept the address that was given
+DHCP Acknowledgement: The server receives the Request packet and it sends an Acknowledgement packet back to confirm the IP address the client has received.
+
+4 What is the purpose of Network Discover protocol ? 5 points
+Please watch Neighbor discover protocols part1 and 2 in educreations to answer this question)
+NDP is the ipv6 version of arp that runs over icmpv6. it discovers network prefixes dynamically, also resolves mac addresses, discover routers dynamically and does DAD (duplicate address detection) which sees if any other node in a local network is about to be given an ip address that another node has.
+tentative address: before DAD is performed
+preferred address: DAD has been performed, is confirmed to not be used on the network
+ndp steps -
+neighbor solicitation: ARP request equivalent, used to resolve the mac address from a known ip address. does neighbor discovery (ND) which means it performs address resolution, neighbor unreachability detection, DAD (duplicate address detection), router discovery and provides redirect functionality.
+neighbor advertisement: ARP reply equivalent, a packet using this could come from anywhere. there are an r, an s and an o flag. the r or router lag tells the role of the sender, if the r code is 1 the sender is a router, if 0 it is not. the s or solicited field tells you if this NA message is sent in response to a neighbor solicit message or not, if it is its 1 if not its 0. o or override flag tells you whether the target link layer address is different from what is in the NC (neighbr cache)
+router solicitation: router solicitation
+router advertisement: equivalent to router advertisement in ARP. has 6 important tags. m or managed field: if 1, dhcp server is giving ip address which means it is stateful, if 0 it is stateless which uses the prefix (from the options field) and mac address to make an ip address which makes the o or other field is obsolete, h is home, prf is preferred, p is proxy, rsvd is reserved.
+redirect: redirect
+duplicate address detection: gratuitous ARP
+Neighbor cache: ARP cache
+
+stateful: when the ip address is given by a dhcp server
+stateless: when the ip address is given by the protocol telling the machine which part is the prefix and then making an ip address out of its own mac address.
+
+neighbor cache (nc): records all ip and mac addresses of all the machine's neighbors in its network, also records their type which is their reachability state. equivalent to the arp cache. to see, go into command prompt and type 'netsh' (net show), then type 'interface ipv6', then type 'show naeighbors'. 
+destination cache: records destinations where traffic has already been sent by this node, includes on-link and off-link nodes. to see, type 'netsh' (net show), then type 'interface ipv6' then type 'shoe destination cache'. maintained by every node in the network
+prefix list: contains information about data from router advertisement messages on every on-link node.
+default rtr list: contains the ip addresses of routers that have sent router advertisements. to see, first type netsh then interface ipv6 then type 'show route' into command prompt
+
+neighbor discovery uses five icmpv6 message types:
+router solicitation (RS) (ICMPv6 type 133)
+router advertisement (RA) (ICMPv6 type 134)
+neighbor solicitation (NS) (ICMPv6 type 135)
+neighbor advertisement (NA) (ICMPv6 type 136)
+redirect (ICMPv6 type 137)
+ND takes over the function of ARP and RARP in IPV4
+ND also does ICMP Router Discovery and ICMP Redirect

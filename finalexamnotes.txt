@@ -1,0 +1,66 @@
+Syntax for the Lab assignment
+Step 1 Interface configuration
+In Global Configuration mode
+interface g0/0
+ip address <ip address >
+no shutdown
+speed 100 <if the router is connected to fast
+ethernet port of the neighboring device>
+exit
+2.Dhcp configuration steps on the router in the global
+configuration mode of the router
+ip dhcp excluded-address <address>
+ip dhcp pool poolname
+network < nid of the subnet you are using> <subnetmask>
+default-router <ip address of the router’s interface>
+Static route Syntax
+# ip route <destination network nid> <destination network
+subnet mask> <next hop router’s ip address>
+
+192.167.1.0/24
+(11111111.11111111.11111111.00000000)
+
+it: 50
+sales: 45
+mkt: 22
+
+it:
+52 hosts
+2^6
+(11111111.11111111.11111111.11000000)
+192-256=64
+
+sales:
+47 hosts
+2^6
+(11111111.11111111.11111111.11000000)
+192-256=64
+
+mkt:
+22 hosts
+2^5
+(11111111.11111111.11111111.11100000)
+224-256=32
+
+link 1:
+4 hosts
+2^2=4
+252-256=4
+(11111111.11111111.11111111.11111100)
+
+link 2:
+4 hosts
+2^2=4
+(11111111.11111111.11111111.11111100)
+252-256=4
+
+
+
+
+it: 52   | 192.167.1.0/26  | 192.167.1.63/26
+          255.255.255.192
+sales: 47| 192.167.1.64/26 | 192.167.1.127/26
+mkt: 27  | 192.167.1.128/27| 192.167.1.159/27
+link 1: 4|   192.167.1.160/30| 192.167.1.163/30
+link 2: 4|  192.167.1.164/30| 192.167.1.167/30
+

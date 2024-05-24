@@ -1,0 +1,828 @@
+--ip classes--
+-ipv6-
+
+16:16:16:16:16:16:16:16
+
+128 bit (16x8) scheme, hexadecimal
+
+decimal | hexadecimal
+1-9     | 1-9
+10      | A
+11      | B
+12      | C
+13      | D
+14      | E
+15      | F
+16      | 10
+17      | 11
+
+(0010 0000 0000 0001:0000 1101 1011 1000:0000 0000 0000 0000: 0000 0000 0000 0000)
+2001:0DB8:65B3:0000:0000
+
+Compact notation:
+when there is a leading zero, ignore
+cannot ignore trailing zero
+can represent a hextet full of zeros as just 1 zero
+can reduce multiple hextets of 0s as :: but only once, leftmost if multiple
+
+2001:0db8:0532:0000:0000:4a20:0350:0000
+
+2001:db8:532::4a20:350:0
+
+
+
+network portion: prefix
+host portion: interface id
+
+types of ipv6 addresses:
+no classes
+
+unspecified - ::/128 (all 128 bits are 0s, looking for ip)
+loopback - ::1 (127 bits are 0s, 128th is 1, machine talking to itself) 
+link local address - starts with fe80:: (these are not routable, cannot send beyond the router, only in local network)
+multicast address - starts with ff00 (sends
+global address - starts with 2000-3fff (routable)
+unique link local - starts with fc/fd
+
+Methods of ip generation: 
+64 modified eui method - takes the mac address of the machine (48 bits), we need 64 so we add 16 bits in the form of fffe right in the middle of the mac address, that's the new interface id so you put that in front of the prefix
+
+-migrating ipv4 to ipv6-
+1) dual stack
+most common, devices can use either ipv4 or ipv6.
+phase in/phase out approach: can upgrade devices from ipv4 to ipv6, more upgraded = more communication happening over ipv6, eventually all will be ipv6 and you can then remove ipv4 protocols
+host machine runs on dual stack (can understand both ipv4 and ipv6)
+router also runs on dual stack so it can send ipv4 and ipv6 packets to their proper places
+
+2) tunneling (teredo, 6to4, isatap)
+teredo tunneling:
+used when two single ipv6 hosts need to communicate over ipv4 network(can be public or private)
+sender generates packet with ipv6 header, packet is encapsulated in a ipv4 header that ipv4 network can understand
+when the encapsulated packet reaches the destination, it removes the ipv4 header before understanding it, both end devices must have dual stack
+
+6 to 4 tunneling:
+if you need two ipv6 capable networks instead of two ipv6  hosts to communicate over a ipv4 network. edge routers are dual stack, when a node on network 1 tries to communicate with a node on network 2 it sends a ipv6 packet to its edge router which converts the ipv6 header to a ipv4 header so it can go through the ipv4 network. when the packet gets to the other network's edge router, the router converts it back to ipv4 packet so the receiving node(s) can understand it.
+
+isatap: (intrasite automatic tunneling addressing protocol)
+used in a private network to connect ipv6 network to ipv4 network.
+the router must be dual stack.
+node from ipv6 network wants to communicate with node on ipv4 netork, node first sends a packet with a ipv6 header to the router which converts it into ipv4 header so that the hosts on the other network can understand it.
+
+NATPT: (network address translation protocol)
+uses host that only understands ipv4 wants to communicate with host that only understands ipv6 or vice versa
+ipv4 host sends packet to natpt router that totally repackages (not encapsulates) the packet and changes it into a ipv6 packet so the other host can understand.
+
+
+3) NAT-PT (network address translation protocol)
+uses host that only understands ipv4 wants to communicate with host that only understands ipv6 or vice versa
+ipv4 host sends packet to natpt router that totally repackages (not encapsulates) the packet and changes it into a ipv6 packet so the other host can understand.
+
+
+
+
+-ipv4-
+-USABLE-
+class A range: 1.0.0.0 to 126.255.255.255
+  default subnet mask: 255.0.0.0 /8 - /15
+  
+class B range: 128.0.0.0 to 191.255.255.255
+  default subnet mask: 255.255.0.0 /16 - /24
+  
+class C range: 192.0.0.0 to 223.255.255.255
+  default subnet mask: 255.255.255.0 /24 - /32
+  
+
+-RESERVED-
+class D range: 244.0.0.0 to 239.255.255.255
+  reserved for multicasting
+  
+class E range: 240.0.0.0 to 254.255.255.255
+  experimental
+  
+--public and private addresses--
+-PRIVATE-
+private address is used to communicate with other computers in the same network.
+
+class A range: 10.0.0.0 to 10.255.255.255
+
+class B range: 172.16.0.0 to 172.31.255.255
+
+class C range: 192.168.0.0 to 192.168.255.255
+
+-PUBLIC-
+public address is used by the default gateway (router) to allow other devices to communicate with the internet.
+
+class A range: 0.0.0.0 to 126.255.255.255
+
+class B range: 128.0.0.0 to 191.255.255.255
+
+class C range: 192.0.0.0 to 223.255.255.255
+
+class D range: 224.0.0.0 to 239.255.255.255
+
+class E range: 240.0.0.0 to 255.255.255.255
+
+APIPA (automatic private ip addressing) range: 169.254.0.1 to 169.254.255.255
+
+--binary equivalents--
+
+128 = 10000000
+192 = 11000000
+224 = 11100000
+240 = 11110000
+248 = 11111000
+252 = 11111100
+254 = 11111110
+255 = 11111111
+
+--subnet masks--
+class A: 255.0.0.0 /8 - /15
+class B: 255.255.0.0 /16 - /24
+class C: 255.255.255.0 /24 - /32
+
+--powers up to 16--
+2^0 = 1
+2^1 = 2
+2^2 = 4
+2^3 = 8
+2^4 = 16
+2^5 = 32
+2^6 = 64
+2^7 = 128
+2^8 = 256
+2^9 = 512
+2^10 = 1,024
+2^11 = 2,048
+2^12 = 4,096
+2^13 = 8,192
+2^14 = 16,384
+2^15 = 32,786
+2^16 = 65,353
+
+--subnetting--
+-CLASS C-
+192.168.1.0 /26 (11111111 11111111 11111111 11000000)
+1) how many subnets ( 2^n (n = # of 1s in last octet ))
+2^2 = 4
+# of subnets = 4
+
+2) how many hosts per subnet ( total: 2^h, usable: 2^h-2 (h = # of 0s in last octet)
+2^6 = 64
+64 total hosts
+2^6-2 = 62
+62 usable hosts
+
+3) network id (reserved, first), broadcast id (reserved, last) ((requires block size))
+((block size = 256 - decimal # of last octet))
+(256 - 192 = 64)
+network portion will always be the same
+NID:
+first nid is always 0
+add block size to the previous nid for the next network
+when your nid equals the mask of the last octet you stop
+BID:
+last bid is always 255
+bid is -1 of the ahead nid
+FIRST VALID: 
++1 nid, if shared by  another bid/nid just go +1 until its unique
+LAST VALID: 
+-1 bid, if shared by another bid/nid just go -1 until its unique
+
+			 nid           | bid            | first valid    | last valid    
+subnet 1 h = 192.168.10.0  | 192.168.10.63  | 192.168.10.1   | 192.168.10.62 
+subnet 2 m = 192.168.10.64 | 192.168.10.127 | 192.168.10.65  | 192.168.10.126
+subnet 3 s = 192.168.10.128| 192.168.10.191 | 192.168.10.129 | 192.168.10.190
+subnet 4 r = 192.168.10.192| 192.168.10.255 | 192.168.10.193 | 192.168.10.254
+4) first usable ip address, last usable ip address for each subnet^^^^^^^^^^^^
+
+-CLASS B-          255     255       192      0
+172.16.0.0 /18 (11111111 11111111 11000000 00000000)
+1) how many subnets ( 2^n (n = # of 1s in 3rd octet))
+2^2 = 4
+4 subnets
+2) how many hosts per subnet (2^h (h = # of 0s in 3rd and 4th octets))
+2^14 = 16384
+total hosts is 12384
+12384 - 2 = 12382
+usable hosts is 12382
+3) network id (reserved, first), broadcast id (reserved, last) ((requires block size))
+((block size = 256 - decimal # of 2nd octet))
+256 - 192 = 64
+block size is 64
+
+network portion will always be the same
+NID:
+first nid is always .0.0
+add block size to the previous nid for the next network
+when your nid equals the mask of the 2nd to last octet you stop
+BID:
+last bid is always 255
+bid is -1 of the ahead nid also 4th octet is always 255, last bid is always 255.255
+FIRST VALID: 
++1 nid, if shared by  another bid/nid just go +1 until its unique
+LAST VALID: 
+-1 bid, if shared by another bid/nid just go -1 until its unique
+
+			 nid          | bid           | first valid  | last valid    
+subnet 1 h = 172.168.0.0  |172.168.63.255 | 172.168.0.1  | 172.168.63.254
+subnet 2 m = 172.168.64.0 |172.168.127.255| 172.168.64.1 | 172.168.127.254
+subnet 3 s = 172.168.128.0|172.168.191.255| 172.168.128.1| 172.168.191.254
+subnet 4 r = 172.168.192.0|172.168.255.255| 172.168.192.1| 172.168.255.254
+4) first and last usable ip address for each subnet
+
+-CLASS A-       255       192      0         0
+10.0.0.0 /10 (11111111 11000000 00000000 00000000)
+1) how many subnets (2^n (n = # of 1s in 2nd octet))
+2^2=4
+4 subnets
+2) how many hosts per subnet (2^h (h = # of 0s in 2nd 3rd and 4th octets))
+2^22 = 4,194,304
+4194304 total
+4194302 usable
+3) network id (reserved, first), broadcast id (reserved, last) ((requires block size))
+((block size = 256 - decimal # of 3rd octet))
+256 - 192 = 64
+block size is 64
+
+network portion will always be the same
+NID:
+first nid is always 0.0.0
+add block size to the previous nid for the next network
+when your nid equals the mask of the 2nd to last octet you stop
+BID:
+last bid is always 255
+bid is -1 of the ahead nid also 4th octet is always 255, last bid is always 255.255
+FIRST VALID: 
++1 nid, if shared by  another bid/nid just go +1 until its unique
+LAST VALID: 
+-1 bid, if shared by another bid/nid just go -1 until its unique
+
+			 nid       | bid          |first valid| last valid    
+subnet 1 h = 10.0.0.0  |10.63.255.255 | 10.0.0.1  | 10.63.255.254
+subnet 2 m = 10.64.0.0 |10.127.255.255| 10.64.0.1 | 10.127.255.254
+subnet 3 s = 10.128.0.0|10.191.255.255| 10.128.0.1| 10.191.255.254
+subnet 4 r = 10.192.0.0|10.255.255.255| 10.192.0.1| 10.255.255.254
+4) first and last usable ip address for each subnet^^^^^^
+
+-CLASS C-          255       255     255       240
+192.168.1.0 /28 (11111111 11111111 11111111 11110000)
+1) How many subnets? (2^n n=1s in 4th octet)
+2^4=16
+16 subnets
+2) how many hosts per subnet? (2^h h=0s in 4th octet)
+2^4=16
+16 total hosts per subnet
+14 usable hosts per subnet
+3) nid and bid for each (Requires block size)
+((Block size = 256 - 240 = 16))
+block size=16
+			 nid         |bid          |first valid  | last valid    
+subnet 1 a = 192.168.1.0 |192.168.1.15 |192.168.1.1  | 192.168.1.14
+subnet 2 b = 192.168.1.16|192.168.1.31 |192.168.1.17 | 192.168.1.30
+subnet 3 c = 192.168.1.32|192.168.1.47 |192.168.1.33 | 192.168.1.46
+subnet 4 d = 192.168.1.48|192.168.1.63 |192.168.1.49 | 192.168.1.62
+subnet 5 e = 192.168.1.64|192.168.1.79 |192.168.1.65 | 192.168.1.78
+subnet 6 f = 192.168.1.80|192.168.1.255|192.168.1.81 | 192.168.1.254
+...
+subnet 16 x 
+4) first usable, last usable for each      ^^^^
+
+-CUSTOM SUBNET MASKS-
+-subnets method-
+number of needed subnets = 6
+look at power chart, get number closest to 6, higher is fine but lower is not acceptable
+8 is closes
+2^3 is 8, focus on the 3, 3 tells you you need to only have 3 1s in your octet of interest to get the number of needed subnets or higher
+in order to get six subnets we need 6 1s, borrow bits
+-borrowing bits-
+count from the left to get the amount of 1s you need, then write the subnet mak
+2
+
+number of usable hosts = 30
+network address = 195.85.8.0
+address class = c 
+default subnet mask: (255.255.255.0)
+custom subnet mask: (255.255.255.224)
+total number of subnets: 2^3 = 8
+total number of host addresses: 2^5 (5=number of 0s in last octet of subnet mask)
+32 total host addresses
+number of usable addresses: 32-2=30
+30 usable host addresses
+number of bits borrowed: 3
+
+
+number of needed subnets = 5
+network address = 218.35.50.0
+default subnet mask: 255.255.255.0
+custom subnet mask: 255.255.255.224 or /27 (11100000
+total number of subnets: 2^3 = 8
+total number of host addreses: 2^5 = 32
+usable host addresses= 32-2 = 30
+number of bits borrowed: 3
+
+number of needed subnets: 1000
+number of usable hosts: 60
+network address = 165.100.0.0
+address class = B
+default subnet mask: 255.255.0(00000000).0(00000000) /16
+custom subnet mask: 255.255.255(11111111).192(11000000) /26
+Total number of subnets: 2^10 = 1024
+1024 subnets
+Total number of host addresses: 2^6 = 64
+usable host addresses: 64-2= 62
+number of bits borrowed:10
+
+--variable length subnet masking--
+length of each subnet is not constant, is variable and is dependant on the host requirement (vlsm)
+
+192.168.1.10/24 (11111111.11111111.11111111.00000000)
+sales | mktg | it (HOST REQUIREMENTS)
+32    | 61   | 14
+
+put in descending order
+
+sales:
+2^6 = 64 (hosts)
+6 0s
+have 8
+add 2 1s
+(11111111.11111111.11111111.11000000) /26
+block size: 256-192 = 64
+
+mktg:
+2^5 = 32 (hosts)
+5 0s
+have 8
+add 3 1s
+(11111111.11111111.11111111.11100000) /27
+block size: 256-224 = 32
+
+it:
+2^4 = 16 (hosts)
+4 0s
+have 8
+add 4 1s
+(11111111.11111111.11111111.11110000) /28
+block size: 256-240 = 16
+
+link1
+2^2 = 4 hosts
+2 0s
+have 8
+add 6 1s
+(111111111.11111111.11111111.11111100) /30
+block size: 256-252 = 4
+
+link2
+2^2 = 4 hosts
+2 0s
+have 8
+add 6 1s
+(111111111.11111111.11111111.11111100) /30
+
+
+         nid            |bid
+sales 61 192.168.1.0    |192.168.1.63
+mktg 32  192.168.1.64   |192.168.1.95
+it 14    192.168.1.96   |192.168.1.111
+link1 4  192.168.1.112 |192.168.1.115
+link2 4  192.168.1.116 |192.168.1.119
+
+-example 2-		 
+sales | mktg | it (HOST REQUIREMENTS)
+18    | 30   | 20
+192.168.1.0 /24 (11111111.11111111.11111111.00000000)
+
+sales
+2^5 = 32 hosts
+5 0s
+have 8
+add 3 1s
+(11111111.11111111.11111111.1110000) /27
+256-224= 32
+
+
+link1
+2^2 = 4 hosts
+
+
+
+         nid         |  bid
+sales 32 192.168.1.0 | 192.168.1.31
+mktg  22 192.168.1.32| 192.168.1.63
+it    20 192.168.1.64| 192.168.1.95
+link1 4  
+link2 4
+
+192.168.1.0/24
+(11111111.11111111.11111111.00000000)
+
+mktg
+32 requirement
+2^5 = 32
+(1111111.1111111.11111111.11100000) (27)
+255.255.255.
+
+mktg 32 (30) 192.168.1.0 |
+sales 22 (20)
+
+--packet tracer-- 
+similar devices, switch to switch, router to pc: crossover
+dissimilar devices: straight
+
+ways of accessing routers: 
+
+Inband: ssh (secure shell) or telnet (not recommended, unsecure)
+Out of band: console cable (blue curved, rollover) cable, used when router is brand new so it wouldn't be able to be accessed by sshmodes in router access:
+
+privilege user - first mode user has access to after logging into the computer - router >
+privilege mode - get here by entering enable in user mode - router#
+global configuration mode - get here by entering configure terminal (or conf t) - router(config)#
+	interface mode - router(config-if)#
+	line mode - router(config-line)#
+	subinterface mode - router(config-subif)#
+
+Router>en
+Router#config t
+Enter configuration commands, one per line.  End with CNTL/Z.
+Router(config)#exit
+Router#
+%SYS-5-CONFIG_I: Configured from console by console
+en
+Router#en
+Router#en
+Router#config t
+Enter configuration commands, one per line.  End with CNTL/Z.
+Router(config)#exit
+Router#
+%SYS-5-CONFIG_I: Configured from console by console
+conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+Router(config)#exit
+Router#
+%SYS-5-CONFIG_I: Configured from console by console
+ei
+Translating "ei"...domain server (255.255.255.255)
+% Unknown command or computer name, or unable to find computer address
+
+Router#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+Router(config)#hostname salesrtr
+salesrtr(config)#int g0/0
+salesrtr(config-if)# ip address 192.168.1.1 255.255.255.240
+salesrtr(config-if)#no shut
+
+salesrtr(config-if)#
+%LINK-5-CHANGED: Interface GigabitEthernet0/0, changed state to up
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0, changed state to up
+
+salesrtr#
+%SYS-5-CONFIG_I: Configured from console by console
+
+salesrtr#ifup
+Translating "ifup"...domain server (255.255.255.255)
+% Unknown command or computer name, or unable to find computer address
+modes in router access:
+
+1) first thing you do on router is assign ip on g0/0 and g0/1
+
+Router>en
+Router#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+Router(config)#hostname mktrtr
+mktrtr(config)#int g0/0
+mktrtr(config-if)#ip address 192.168.1.1
+% Incomplete command.
+mktrtr(config-if)#ip address 192.168.1.1 255.255.255.224
+mktrtr(config-if)#no shut
+
+mktrtr(config-if)#
+%LINK-5-CHANGED: Interface GigabitEthernet0/0, changed state to up
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0, changed state to up
+speed 100
+
+mktrtr>en
+mktrtr#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+mktrtr(config)#int g0/1
+mktrtr(config-if)#ip address 192.168.1.65 255.255.255.252
+mktrtr(config-if)#no shut
+
+mktrtr(config-if)#
+%LINK-5-CHANGED: Interface GigabitEthernet0/1, changed state to up
+
+mktrtr#
+%SYS-5-CONFIG_I: Configured from console by console
+
+
+
+
+2) set static route
+3) set dhcp
+4) configure switch
+    make vlans
+	configure trunk/access ports
+	access port: connects switch to end devices
+	trunk port: connects switch to intermediary devices
+	
+	
+---- -------------------------------- --------- -------------------------------
+1    default                          active    Fa0/1, Fa0/2, Fa0/3, Fa0/4
+                                                Fa0/5, Fa0/6, Fa0/7, Fa0/8
+                                                Fa0/9, Fa0/10, Fa0/11, Fa0/12
+                                                Fa0/13, Fa0/14, Fa0/15, Fa0/16
+                                                Fa0/17, Fa0/18, Fa0/19, Fa0/20
+                                                Fa0/21, Fa0/22, Fa0/23, Fa0/24
+                                                Gig0/1, Gig0/2
+10   mkt                              active    
+1002 fddi-default                     active    
+1003 token-ring-default               active    
+1004 fddinet-default                  active    
+1005 trnet-default                    active    
+Switch(config)#int fa0/1
+Switch(config-if)#switchport mode access
+Switch(config-if)#switchport access vlan 10
+Switch(config-if)#do show vlan br
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active    Fa0/2, Fa0/3, Fa0/4, Fa0/5
+                                                Fa0/6, Fa0/7, Fa0/8, Fa0/9
+                                                Fa0/10, Fa0/11, Fa0/12, Fa0/13
+                                                Fa0/14, Fa0/15, Fa0/16, Fa0/17
+                                                Fa0/18, Fa0/19, Fa0/20, Fa0/21
+                                                Fa0/22, Fa0/23, Fa0/24, Gig0/1
+                                                Gig0/2
+10   mkt                              active    Fa0/1
+1002 fddi-default                     active    
+1003 token-ring-default               active    
+1004 fddinet-default                  active    
+1005 trnet-default                    active    
+Switch(config-if)#exit
+Switch(config)#vlan 20
+Switch(config-vlan)#name sales
+Switch(config-vlan)#do show vlan br
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active    Fa0/2, Fa0/3, Fa0/4, Fa0/5
+                                                Fa0/6, Fa0/7, Fa0/8, Fa0/9
+                                                Fa0/10, Fa0/11, Fa0/12, Fa0/13
+                                                Fa0/14, Fa0/15, Fa0/16, Fa0/17
+                                                Fa0/18, Fa0/19, Fa0/20, Fa0/21
+                                                Fa0/22, Fa0/23, Fa0/24, Gig0/1
+                                                Gig0/2
+10   mkt                              active    Fa0/1
+20   sales                            active    
+1002 fddi-default                     active    
+1003 token-ring-default               active    
+1004 fddinet-default                  active    
+1005 trnet-default                    active    
+Switch(config-vlan)#exit
+Switch(config)#int fa0/2
+Switch(config-if)#switchport mode access
+Switch(config-if)#switchport access vlan 20
+Switch(config-if)#do show vlan br
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active    Fa0/3, Fa0/4, Fa0/5, Fa0/6
+                                                Fa0/7, Fa0/8, Fa0/9, Fa0/10
+                                                Fa0/11, Fa0/12, Fa0/13, Fa0/14
+                                                Fa0/15, Fa0/16, Fa0/17, Fa0/18
+                                                Fa0/19, Fa0/20, Fa0/21, Fa0/22
+                                                Fa0/23, Fa0/24, Gig0/1, Gig0/2
+10   mkt                              active    Fa0/1
+20   sales                            active    Fa0/2
+1002 fddi-default                     active    
+1003 token-ring-default               active    
+1004 fddinet-default                  active    
+1005 trnet-default                    active    
+Switch(config-if)#
+%LINK-3-UPDOWN: Interface FastEthernet0/1, changed state to down
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/1, changed state to down
+
+%LINK-3-UPDOWN: Interface FastEthernet0/2, changed state to down
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/2, changed state to down
+
+%LINK-5-CHANGED: Interface FastEthernet0/1, changed state to up
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/1, changed state to up
+
+%LINK-5-CHANGED: Interface FastEthernet0/2, changed state to up
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/2, changed state to up
+
+Switch(config-if)#int fa0/24
+Switch(config-if)#exit
+Switch(config)#int fa0/24
+Switch(config-if)#switchport mode trunk
+Switch(config-if)#switchpot trunk allow vlan all
+                          ^
+% Invalid input detected at '^' marker.
+	
+Switch(config-if)#switchport trunk allow vlan all
+Switch(config-if)#
+
+privilege user - first mode user has access to after logging into the computer - router >
+privilege mode - get here by entering enable/en in user mode - router#
+global configuration mode - get here by entering configure terminal (or conf t) - router(config)#
+	interface mode - router(config-if)#
+	line mode - router(config-line)#
+	subinterface mode - router(config-subif)#
+
+DHCP steps:
+lease does not work in packet tracer
+ip dhcp excluded-address: x.x.x.x (exclude ip address from dhcp so it cant use it, separate with space)
+ip dhcp pool <pool name> (enters pool mode, gives pool name)
+   network <nid of the subnet> <subnet mask> (gives ips to the pool)
+   default-router <ip of the router's interface> (gives default gateway to the pool)
+   dns-server <ip of the dns server> (provides dns)
+   exit (Exits to previous mode)
+
+no ip dhcp pool <pool name> (if you want to delete a pool if you made a mistake)
+no network <ip> <subnet> (deletes a specific entry from a pool)
+   
+hostname salesrtr (change name of router to salesrtr)
+int g0/0 (takes you into sub interface mode)
+ip address [ip address here] [subnet mask here (sets ip address and subnet mask of current interface)
+no shut (switches current interface from administratively down to up)
+exit (take a step back in configuration modes)
+do [command] (does command in global config mode, works for certain commands)
+
+speed mismatch:
+fa (fast, 100mbps)
+gig (gigabit, 1000 mbps)
+speeds have to be the same so decrease speed of gigabit to 1000 to 100
+
+int g0/0 (enters config of g0/0)
+speed 100 (sets speed of the router to 100 mbps)
+exit
+   
+show run (used for troubleshooting, shows you the commands you have typed)
+copy run start (saves your changes)
+
+static route syntax:
+(global config mode) ip route <destination nid> <destination subnet mask> <next hop routers ip address>
+
+--tcp/ip--
+tcp = reliable but not fast
+udp = fast but not reliable
+ip = both, combined
+
+--osi layers--
+PDU: different types of data, different for each
+sender        | receiver
+
+7 application | application
+6 presentation| presentation
+5 session     | session
+4 transport   | transport
+3 network     | network
+2 data link   | data link
+1 physical    | physical
+
+LAYER 1 PHYSICAL: hardware, cords, etc. converts data into 0s and 1s and electric pulses, if it is fiber optic this data is converted into light pulses, if its over wifi the data is converted to electromagnetic waves. pdu is 'bit' or 1s and 0s
+LAYER 2 DATA LINK: mac address, duplex, switches. adds mac addresses of source and destination machines to a packet. if the destination is in a different subnet or network then the mac address of the router is used. if its in the same then the source computer mac address is used as the destination. pdu is 'frame'.
+LAYER 3 NETWORK: routers, dynamic routes, endpoints in network. adds the ip addresses of the source and receiver to each segment, turning the segment into a packet.  pdu is 'packet'.
+LAYER 4 TRANSPORT: breaks down data into smaller pieces called fragments so it is smaller than the mtu (maximum transport unit). also handles sequencing for these fragments so they can be put back together in the right order, also adds the sending port and the receiving port to the fragments, also it handles flow control which makes sure the receiver and the sender are sending data at the same speed, also it handles error detection/data integrity by adding checksum values which are calculated by the sender via crc (cyclic redundancy check) algorithm which is embedded into the header of all segments. it makes a checksum by using the values of everything in the header. if the checksum value the receiver generated is the same as the one the sender did, then the data has not been altered. if it is different, then there is an error and it drops it and requests retransmission. pdu is 'segment'
+LAYER 5 SESSION: establishes maintains and terminates session between two endpoints, also describes how data between apps is synced, recovers if message doesn't reach receiver through checkpoints. data is called 'SPDU (session pdu)'.
+LAYER 6 PRESENTATION: helps in presenting the data to the appropriate format to the below layers. does encryption/decryption, compression/decompression and converting data to standard format. data is called 'presentation pdu'
+LAYER 7 APPLICATION: acts as an interface that an application uses to request network services, helps the users interact with layers below it. data is called 'application 'pdu'. examples are dhcp telnet smtp pop tftp ssh 
+
+ftp: for transmitting files between computers over tcp/ip. ports 21/20
+telnet: used to remotely access a computer and to provide a communication channel between two hosts. tcp/ip, port 23
+POP 3: used for receiving mail over the internet. only one person can view the email at a time. tcp/ip, port 110/995
+IMAP: used for receiving mail over the internet. unlike pop3 you can view the email from multipe places at once. tcp/ip, port 143/993
+HTTP: used for transferring files over the internet. tcp/ip, port 80
+HTTPS: used for securely transferring files over the internet. tcp/ip, port 443
+SMTP: used for sending and receiving mail over the internet, but its not good at queueing receiving mail so it is usually used in conjunction with the other email protocols. tcp/ip, port 587
+SSH: used to remotely access a computer in a secure fashion. also provides authentication and data encryption between two computers communicating via the internet. tcp/ip, port 22
+DNS: used to give human readable names to the ip addresses of websites, it also translate those human readabe names into ip addresses the computer can understand. uses tcp for zone transfer and udp for name, port 53
+TFTP: for simply transmitting files between computers over tcp/ip. no authentication. port 69
+BGP: used to maintain internet stability by managing how data flows from one network to another. in the event of a network failure it looks for an alternative route for that data to go. tcp/ip, port 179
+BOOTP(DHCPV4): allows a host to automatically receive an ip address and operating system without user involvement from a bootp server. udp, port 67
+
+%LINK-5-CHANGED: Interface FastEthernet0/24, changed state to up
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/24, changed state to up
+
+
+Switch>en
+Switch#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+Switch(config)#line con 0
+Switch(config-line)#password cisco
+Switch(config-line)#login
+Switch(config-line)#exit
+Switch(config)#enable secret class
+Switch(config)#exit
+Switch#
+%SYS-5-CONFIG_I: Configured from console by console
+
+Switch#en
+Switch#conf
+Configuring from terminal, memory, or network [terminal]? no
+?Must be "terminal", "memory" or "network"
+Switch#
+Switch#
+
+--NETWORK CABLING--
+NIC (network interface car): every node in a network has one, required to access the network. contains a transceiver that helps the node communicate with the network. Ethernet nics are used for lans and wireless nics are used for transmission on wireless networks.
+
+-PHYSICAL LAYER STANDARDS-
+ISO (international standards organization): bring about standards in many industries
+IEEE (institute of electrical and electronics engineers): society that develops national/international standards in a wide variety of technical areas like power line, wired, wireless. made IEEE 802.3 for ethernet (Wired) technologies, IEEE 802.11 for wireless technologies and 802.16 for broadband wireless metropolitan area networking (ymax)
+ITU (international telecommunications union): US agency tha tregulates international telecommunications, provides developing countries with skills equipment and technical expertise to advance their technology
+ANSI (american national standards institute)
+
+-TRANSMISSION CHARACTERISTICS-
+Bandwidth: Theoretical amount of traffic or data transmission on the network, or the difference between the highest and lowest frequiencies that the medium can transmit across a unit of time. represented as megabits like 1mbps/10gbps etc
+Throughput (payload rate, effective data rate): Measure of how much data is actually transmitted during a given period of time. represented in megahertz like 200mhz etc
+
+-TYPES OF PHYSICAL MEDIA-
+Copper media: physical, commonly used in modern LANs. Color coded pairs of insulated copper wires each with the diameter of 0.4-0.8 mm: white brown, solid brown, white green, solid green, white blue, solid blue, white orange, solid orange. called twisted pairs because the pairs are twisted around each other, encased in a plastic sheet. the more twists (or twist ratio) the more resistant the pair is to crosstalk or noise. different categories, like category 3 category 5 5v6 6a7 that fall under TIAEIA standards. modern LANs use CAT5e or higher. they are inexpensive, flexible, easy to install and can span a significant distance before requiring a booster to boost the signal.
+	UTP (unshielded twisted pair): consists of twisted pairs that are encased in a plastic sheet. no additional shielding so it is less expensive but also less resistant to noise.
+	STP (shielded twisted pair): consists of twisted pairs that are not only individually insulated byt also surrounded by a shielding made of metallic substance like foil, plus braided copper shielding that acts as a barrier to external electromagnetic forces, preventing them from affecting the signals travelling through the wire.
+		Cat3: supports 10 mbps and a bandwidth of 16 mhz 
+		Cat5: supports 100 mbps and a bandwidth of 100mhz
+		Cat5e: supports 1 gbps/1000mbps and a bandwidth of 350mhz
+		Cat6: supports 10 gbps and a bandwidth of 250mhz
+		Cat6a: supports 10 gbps and a bandwidth of 500mhz
+		Cat7: supports 10 gbps and a bandwidth of 600mhz
+		Cat7a: supports 4200 gbps and a bandwidth of 1000mhz
+	Fiber optic: consists of several glass or plastic fibers in its center (or core), data is transmitted through these central fibers via lasers sent by LEDs, surrounding the fibers is a layer of glass or plastic known as clouding which has a density different from the glass or plastic in the core. very high resistance to noise, excellent security, high throughput and can carry signals for a much longer distance before requiring a repeater, the standard for all high speed networking. distance data can be carried depends on light wavelength and depends on whether the cable is single-mode or multi-mode. used in submarine cable networks, by ISPs to connect countries and cities, to provide broadband services to homes and small businesses, and for backbone purposes for popular services
+		SMF (single mode fiber): used by all internet backbone. narrow core (8-10mm). laser travels through the single path reflecting very little so it does not disperse as it travels along the fiber. this continuity allows this method to go the highest distance and support the most bandwidth but it is very expensive
+		MMF (multi mode fiber): wider core than SMF (50-62.5 mm) over which many light pulses that travel at different angles along the multi mode fiber, results in greater attenuation compared to SMF. not suitable for long distance data transmission, but if it is shorter it is better to use as it is a lot cheaper than SMF.
+	Coaxial
+	
+-TOPOLOGY- (the manner in which things on a network are connected)
+physical topology: How the physical cables are connected
+logical topology: How data is going through the network (ip addressing schemes used, how virtual circuits/logical connections are established between networks etc
+
+-WAN/LAN TOPOLOGY-
+Bus: Each node/site is directly connected to no more than 2 other sites or nodes in a serial fashion. Each node depends on the other node to transmit or receive data. also, all devices share access to the cable. [o-o-o-o]
+
+Ring: Each node is connected to 2 other nodes, but it is circular and the last one connects to the first one
+[>ov
+ o o
+ ^o<]
+ 
+Star: all devices connected to a central device or hub, the hub can be a switch. single point of failure, if the hub fails the entire network goes down
+LAN:
+o      o
+v      v
+[hub]
+^      ^
+o      o
+
+	 
+Mesh: most redundant and fault tolerant type of topology because every node is connected to every other node. if one node in the way of data fails, there is another path the data can take.
+ 
+-types of data transmission-
+all networking devices alow you to specify which type you should use, but full duplex is the default. both sides of a transmission should be using the same type or else there will be errors
+
+simplex: signals can travel in only one direction
+half duplex: signals can travel in both directions but only one at a time
+full duplex: signals can travel in both directions at the same time
+
+--PACKET HEADER STRUCTURE--
+
+-ipv4 header fields-
+version|header|type of service|total length|Identification|flags|fragment offset|time to live|protocol|header checksum|SOURCE ADDRESS|
+
+version field: the field that tells you what version the packet is. if you see a 4, it is an ipv4 packet
+header length/internet header length: tells you the length/size of the ip header. minimum size is 20 bytes and maximum size is 60 bytes.
+type of service: 8 bit field.
+    precedence: first 3 bits, used by the router to prioritize traffic that goes through the router queues, which is a router buffering system used to hold packets when the router is congested
+	type of service: next 4 bits, used by the router to follow a specified path type to maximize security, reliability, throughput or minimize delay. 1111 is maximum security, 0100 is maximum throughput, 0010 is maximum reliability, 1000 is minimum delay.
+	last bit: unused/reserved. not in use
+    there is another way to differentiate services according to rfc2474.
+	dscp: first 6 bits, differentiated service core pointer
+	ECN: next bit, explicit congestion notification, allows end to end notification without dropping the packets. only used when both ends support it and are willing to use it. designed to provide devices with notifying eachother that the link is experiencing congestion before routers begin to drop the packets. if the ECN is 0 and the CE is 1 or ECN is 1 and CE is 0, then the sending router supports ECN and it is ECT. if the combination is 0 and 0, then the sender is not ECT. if the combination is 1 and 1 then the sender is capable of ECT and there is congestion.
+		ECT: ECN capable transport. if a packet between two routers is experiencing congestion, the receiving router may change the node to congestion encounter (EC)
+	C bit:
+	in this way first 6 bits are called 'differentiated' services and they are called the differentiated service core pointer or dscp. the next bit is used for ECN or explicit congestion notification, it is defined and the next one is the C bit which tells you whether there's congestion or not.
+total length: the length of the header plus the data
+identification: used to identify fragmented data with each other so that they can be put back together. fragmented data will have the same identification number to show that it is only a piece of a larger set of data
+	data is only fragmented when the data being sent is larger than the MTU (maximum transmission unit).
+flags: assists in the reassembling of fragmented data at the receiving end. 3 bits.
+	dome fragment: 1 (true) means fragmentation is not allowed, 0 (false) means if the packet size is larger than the mtu then the packet should be fragmented.
+	more fragment: 1 (true) tells the receiver that there are more fragments are coming. 0 (false) tells the receiver that there are no more fragments coming.
+	reserve: unused
+fragment offset: assists in the reassembling of fragmented data at the receiving end. shows where to place the fragmented pieces of data as they are being reassembled, sequencing the fragmented data to make it look exactly like the original data. each fragmented portion will have its own unique offset.
+time to live: prevents routing loops which happen when packets hop between routers endlessly by giving a packet a certain time to exist, after that time it is disposed of. possible values are 32, 64, 128 and 255. each time the packet hops the value goes down by 1. if the the value hits 0 before the packet reaches its destination, the packet is dropped off and it sends an error message back to the sender that tells it the time on the packet exceeded.
+protocol: 8 bits. identifies the type of transport layer protocol that will receive the data. specifies whether it is udp/tcp, so it defines the protocol that is used in the higher layer.
+	17: udp
+	6: tcp
+	1: icmp
+header checksum: provides error detection on the header only, helps to identify whether any of the contents on these header fields are modified. it takes the values of all the fields and runs an algorithm that generates a number via the crc (cyclic redundancy check) algorithm, that number becomes the checksum value. the receiver then takes the fields and uses the same algorithm to generate a checksum value and compares it to the header checksum. if the checksum from the header and the checksum it generates match, the data was not modified as it was being transmitted, if it doesnt the data was modified.
+source ip: ipv4 address of the machine the packet is coming from. can change if it is a private ip address and needs to be a public ip address. communicate to 
+
+
+
+    

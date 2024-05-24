@@ -1,0 +1,75 @@
+
+Subnet assignment Class C , B   and A                        10 points
+Identify the following for 192.168.1.0 /29
+1.	How many subnets
+192.168.1.0 /29 (11111111.11111111.11111111.11111000) (255.255.255.248) (class c)
+2^5 = 32
+32 subnets
+2.	How many hosts per subnets (total and usable)
+2^3 = 8
+8 total hosts
+8-2
+6 usable hosts
+3.	Identify the NID (network identification) and BID (Broadcast Identification ) for each subnet
+
+block size= 256-248=8
+
+			 nid        | bid          | first valid   | last valid    
+subnet 1  = 192.168.1.0 | 192.168.1.7  | 192.168.1.1   | 192.168.1.6 
+subnet 2  = 192.168.1.8 | 192.168.1.15 | 192.168.1.9   | 192.168.1.14
+subnet 3  = 192.168.1.16| 192.168.1.23 | 192.168.1.17  | 192.168.1.22
+subnet 4  = 192.168.1.24| 192.168.1.31 | 192.168.1.25  | 192.168.1.30
+subnet 5  = 192.168.1.32| 192.168.1.39 | 192.168.1.33  | 192.168.1.38
+subnet 6  = 192.168.1.40| 192.168.1.47 | 192.168.1.41  | 192.168.1.46
+...
+subnet 32
+4.	Identify the First usable and Last usable ip address for each subnet ^^^^^^^^^^^
+
+
+Identify the following for 172.16.0.0/20                          10 points
+1.	How many subnets
+172.16.0.0/20 (11111111.11111111.11110000.00000000) (255.255.240.0)
+2^4 = 16
+16 subnets
+
+2.	How many hosts per subnets (total and usable)
+2^12 = 4096
+4096 total hosts per subnet total
+4094 usable hosts per subnet total
+
+3.	Identify the NID (network identification) and BID (Broadcast Identification ) for each subnet
+240 - 256 = 16
+
+			 nid        | bid          | first valid   | last valid    
+subnet 1  = 172.16.0.0 | 172.16.15.255 | 172.16.0.1   | 172.16.15.254 
+subnet 2  = 172.16.16.0| 172.16.31.255 | 172.16.16.1  | 172.16.31.254
+subnet 3  = 172.16.32.0| 172.16.47.255 | 172.16.32.1  | 172.16.47.254
+subnet 4  = 172.16.48.0| 172.16.63.255 | 172.16.48.1  | 172.16.63.254
+subnet 5  = 172.16.64.0| 172.16.79.255 | 172.16.64.1  | 172.16.79.254
+subnet 6  = 172.16.80.0| 172.16.95.255 | 172.16.80.1  | 172.16.95.254
+...
+subnet 16
+4.	Identify the First usable and Last usable ip address for each subnet ^^^^^^^^^^^^^^^^^
+
+
+Identify the following for 10.0.0.0 /12                        10 points
+1.	How many subnets
+10.0.0.0 /12 (11111111 11110000 00000000 00000000) (255.240.0.0)
+2^4= 16
+16 subnets 
+2.	How many hosts per subnets (total and usable)
+2^20= 1048576
+1048576 total hosts per subnet
+1048574 usable hosts per subnet
+3.	Identify the NID (network identification) and BID (Broadcast Identification ) for each subnet
+block size= 256-240=16
+			 nid      | bid          | first valid| last valid    
+subnet 1  = 10.0.0.0  | 10.15.255.255| 10.0.0.1   | 10.15.255.254
+subnet 2  = 10.16.0.0 | 10.31.255.255| 10.16.0.1  | 10.31.255.254
+subnet 3  = 10.32.0.0 | 10.47.255.255| 10.32.0.1  | 10.47.255.254
+subnet 4  = 10.48.0.0 | 10.63.255.255| 10.48.0.1  | 10.63.255.254
+subnet 5  = 10.64.0.0 | 10.79.255.255| 10.64.0.1  | 10.79.255.254
+subnet 6  = 10.80.0.0 | 10.95.255.255| 10.80.0.1  | 10.95.255.254
+... 
+subnet 16
+4.	Identify the First usable and Last usable ip address for each subnet ^^^^^^^^^^^^^^^^

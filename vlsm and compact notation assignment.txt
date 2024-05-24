@@ -1,0 +1,133 @@
+Total Points :14
+Create a vlsm scheme for the following host requirement using 192.168.1.0/24 as the main network.  ( 2POINTS). 
+(PLEASE WATCH THE Videos Migration Techniques VLSMpart1,2,3 IN  EDUCREATIONS BEFORE ANSWERING THIS QUESTION)
+
+SALES: 48 , MARKETING 22 , HR =24 , IT = 6
+
+192.168.1.0/24
+(11111111.11111111.11111111.00000000)
+(255.255.255.0)
+
+sales
+2^6 hosts
+(.11000000)
+(192)
+192-256
+block size= 64
+6
+hr
+2^5 hosts
+(.11100000)
+(224)
+224-256
+block size= 32
+
+marketing
+2^5 hosts
+(.11100000)
+(224)
+224-256
+block size= 32
+
+it
+2^3 hosts
+(.11111000)
+(248)
+248-256
+block size= 8
+
+links
+2^2 hosts
+(.11111100)
+
+                 nid          bid
+sales: 50     | 192.168.1.0/26  | 192.168.1.63/26
+hr: 26        | 192.168.1.64/27 | 192.168.1.95/27
+marketing: 24 | 192.168.1.96/27 | 192.168.1.127/27
+it: 8         | 192.168.1.128/29| 192.168.1.135/29
+link 1: 4     | 192.168.1.132/30| 192.168.1.135/30
+link 2: 4     | 192.168.1.136/30| 192.168.1.139/30
+link 3: 4     | 192.168.1.140/30| 192.168.1.143/30
+
+
+
+Create a vlsm scheme for the following host requirement using 192.168.1.0/24 as the main network.    (2POINTS)
+
+SALES: 14 , MARKETING =14 , HR=60
+
+192.168.1.0/24
+(11111111.11111111.11111111.00000000)
+
+hr
+2^6 hosts
+(.11000000)
+192
+192-256
+block size= 64
+
+sales
+2^4 hosts
+(.11110000)
+240
+240-256
+block size= 16
+
+ 
+                 nid      | bid
+hr: 62        192.168.1.0/26 |192.168.1.63/26
+sales: 16     192.168.1.64/28 |192.168.1.79/28
+marketing: 16 192.168.1.80/28 |192.168.1.95/28
+link 1: 4     192.168.1.96/30 |192.168.1.100/30
+link 2: 4     192.168.1.101/30|192.168.1.105/30
+
+
+Create a vlsm scheme for the following host requirement using 172.16.0.0/16 as the main network.    (2POINTS)
+SALES: 401, MARKETING =202, HR=99
+
+172.16.0.0/16
+(11111111.11111111.00000000.00000000)
+
+sales
+2^9 hosts
+(.11111110.00000000)
+254-256
+block size=2
+
+Marketing
+2^8 hosts
+(.11111111.00000000)
+255-256
+block size= 1
+
+hr
+2^7 hosts
+(.11111111.10000000)
+255-256
+block size=1
+
+link
+2^2 hosts
+(.11111111.11111100)
+255-256
+block size=1
+                   nid            | bid
+sales: 401         172.16.0.0/23  | 172.16.1.255/23
+Marketing: 202     172.16.2.0/24  | 172.16.2.255/24
+hr: 99             172.16.3.0/25  | 172.16.3.127/25
+link 1: 4          172.16.3.128/30| 172.16.3.131/30
+link 2: 4          172.16.3.132/30| 172.16.3.135/30             
+
+
+
+
+
+
+Convert the following IPV6 address in the compact Notation ( Please watch the  IPV6 COMPACT NOTATION VIDEO BEFORE ANSWERING THIS QUESTION) (each question carries 4 points).   Total 8 points
+
+2001:00b8:0000:0786:0000:2345:0000:2345
+2001:b8:0:786:0:2345:0:2345
+
+
+2001:0db8:0000:0000:2345:0000:0000:0dcd
+2001:db8::2345:0:0:dcd
+

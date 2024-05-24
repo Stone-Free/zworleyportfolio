@@ -1,0 +1,28 @@
+Write name of the OSI layer , the functions they perform and PDU   (15 points)
+	
+
+LAYER 1 PHYSICAL: hardware, cords, etc. converts data into 0s and 1s and electric pulses, if it is fiber optic this data is converted into light pulses, if its over wifi the data is converted to electromagnetic waves. pdu is 'bit' or 1s and 0s
+LAYER 2 DATA LINK: mac address, duplex, switches. adds mac addresses of source and destination machines to a packet. if the destination is in a different subnet or network then the mac address of the router is used. if its in the same then the source computer mac address is used as the destination. pdu is 'frame'.
+LAYER 3 NETWORK: routers, dynamic routes, endpoints in network. adds the ip addresses of the source and receiver to each segment, turning the segment into a packet.  pdu is 'packet'.
+LAYER 4 TRANSPORT: breaks down data into smaller pieces called fragments so it is smaller than the mtu (maximum transport unit). also handles sequencing for these fragments so they can be put back together in the right order, also adds the sending port and the receiving port to the fragments, also it handles flow control which makes sure the receiver and the sender are sending data at the same speed, also it handles error detection/data integrity by adding checksum values which are calculated by the sender via crc (cyclic redundancy check) algorithm which is embedded into the header of all segments. it makes a checksum by using the values of everything in the header. if the checksum value the receiver generated is the same as the one the sender did, then the data has not been altered. if it is different, then there is an error and it drops it and requests retransmission. pdu is 'segment'
+LAYER 5 SESSION: establishes maintains and terminates session between two endpoints, also describes how data between apps is synced, recovers if message doesn't reach receiver through checkpoints. data is called 'SPDU (session pdu)'.
+LAYER 6 PRESENTATION: helps in presenting the data to the appropriate format to the below layers. does encryption/decryption, compression/decompression and converting data to standard format. data is called 'presentation pdu'
+LAYER 7 APPLICATION: acts as an interface that an application uses to request network services, helps the users interact with layers below it. data is called 'application 'pdu'. examples are dhcp telnet smtp pop tftp ssh 
+
+
+
+2. Write the function,type(TCP or UDP) and the port numbers for the following  services   (15 points)
+ftp: for transmitting files between computers over tcp/ip. ports 21/20
+telnet: used to remotely access a computer and to provide a communication channel between two hosts. tcp/ip, port 23
+POP 3: used for receiving mail over the internet. only one person can view the email at a time. tcp/ip, port 110/995
+IMAP: used for receiving mail over the internet. unlike pop3 you can view the email from multipe places at once. tcp/ip, port 143/993
+HTTP: used for transferring files over the internet. tcp/ip, port 80
+HTTPS: used for securely transferring files over the internet. tcp/ip, port 443
+SMTP: used for sending and receiving mail over the internet, but its not good at queueing receiving mail so it is usually used in conjunction with the other email protocols. tcp/ip, port 587
+SSH: used to remotely access a computer in a secure fashion. also provides authentication and data encryption between two computers communicating via the internet. tcp/ip, port 22
+DNS: used to give human readable names to the ip addresses of websites, it also translate those human readabe names into ip addresses the computer can understand. uses tcp for zone transfer and udp for name, port 53
+TFTP: for simply transmitting files between computers over tcp/ip. no authentication. port 69
+BGP: used to maintain internet stability by managing how data flows from one network to another. in the event of a network failure it looks for an alternative route for that data to go. tcp/ip, port 179
+BOOTP(DHCPV4): allows a host to automatically receive an ip address and operating system without user involvement from a bootp server. udp, port 67
+
+
